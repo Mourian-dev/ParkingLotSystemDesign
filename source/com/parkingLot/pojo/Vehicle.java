@@ -1,19 +1,21 @@
 package com.parkingLot.pojo;
 
+import com.parkingLot.util.Validator;
+
 public class Vehicle {
 
     private final String vehicleNumber;
     private final VehicleType vehicleType;
 
-    public Vehicle(String vehicleNumber,VehicleType vehicleType) {
-        if (vehicleNumber == null || vehicleNumber.isBlank()) {
-            throw new IllegalArgumentException("Vehicle number is required.");
-        }
-        if (vehicleType == null) {
-            throw new IllegalArgumentException("Vehicle type is required.");
-        }
+    private Vehicle(String vehicleNumber, VehicleType vehicleType) {
+        Validator.requireNonBlank(vehicleNumber, "vehicleNumber");
+        Validator.requireNonNull(vehicleType, "vehicleType");
         this.vehicleNumber = vehicleNumber;
         this.vehicleType = vehicleType;
+    }
+
+    public static Vehicle of(String vehicleNumber, VehicleType vehicleType) {
+        return new Vehicle(vehicleNumber, vehicleType);
     }
 
     public String getVehicleNumber() {
@@ -24,4 +26,3 @@ public class Vehicle {
         return vehicleType;
     }
 }
-

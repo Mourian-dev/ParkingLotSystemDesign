@@ -3,6 +3,7 @@ package com.parkingLot.repository;
 import com.parkingLot.pojo.Ticket;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,12 +22,11 @@ public class InMemoryTicketRepository implements TicketRepository {
     }
 
     @Override
-    public Ticket getActiveTicketByVehicleNumber(String vehicleNumber) {
+    public Optional<Ticket> getActiveTicketByVehicleNumber(String vehicleNumber) {
         return ticketStore.values().stream()
                 .filter(ticket -> ticket.getVehicle().getVehicleNumber().equals(vehicleNumber))
                 .filter(ticket -> ticket.getExitTime() == null)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override

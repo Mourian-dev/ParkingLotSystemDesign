@@ -5,6 +5,7 @@ import com.parkingLot.pojo.ParkingLot;
 import com.parkingLot.pojo.Spot;
 import com.parkingLot.pojo.VehicleType;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,13 +31,7 @@ public class InMemorySpotRepository implements SpotRepository {
     public Optional<Spot> findAvailableSpot(VehicleType vehicleType) {
         return spotStore.values().stream()
                 .filter(spot -> !spot.isOccupied() && spot.getVehicleType() == vehicleType)
-                .sorted((left, right) -> {
-                    int floorCompare = Integer.compare(left.getFloorNo(), right.getFloorNo());
-                    if (floorCompare != 0) {
-                        return floorCompare;
-                    }
-                    return Integer.compare(left.getSlotNo(), right.getSlotNo());
-                })
+                .sorted(Comparator.comparingInt(Spot::getFloorNo).thenComparingInt(Spot::getSlotNo))
                 .findFirst();
     }
 

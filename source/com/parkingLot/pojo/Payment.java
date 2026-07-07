@@ -1,23 +1,23 @@
 package com.parkingLot.pojo;
 
+import com.parkingLot.util.Validator;
+
 public class Payment {
     private final String paymentId;
     private final double amount;
     private final PaymentMethod paymentMethod;
 
-    public Payment(String paymentId, double amount, PaymentMethod paymentMethod) {
-        if (paymentId == null || paymentId.isBlank()) {
-            throw new IllegalArgumentException("Payment id is required.");
-        }
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount cannot be negative.");
-        }
-        if (paymentMethod == null) {
-            throw new IllegalArgumentException("Payment method is required.");
-        }
+    private Payment(String paymentId, double amount, PaymentMethod paymentMethod) {
+        Validator.requireNonBlank(paymentId, "paymentId");
+        Validator.requireNonNegative(amount, "amount");
+        Validator.requireNonNull(paymentMethod, "paymentMethod");
         this.paymentId = paymentId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
+    }
+
+    public static Payment of(String paymentId, double amount, PaymentMethod paymentMethod) {
+        return new Payment(paymentId, amount, paymentMethod);
     }
 
     public String getPaymentId() {

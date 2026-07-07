@@ -1,15 +1,19 @@
 package com.parkingLot.pojo;
 
+import com.parkingLot.util.Validator;
+
 import java.util.List;
 
 public class ParkingLot {
     private final List<Floor> floors;
 
-    public ParkingLot(List<Floor> floors) {
-        if (floors == null || floors.isEmpty()) {
-            throw new IllegalArgumentException("Parking lot must contain at least one floor.");
-        }
+    private ParkingLot(List<Floor> floors) {
+        Validator.requireNonEmpty(floors, "floors");
         this.floors = floors;
+    }
+
+    public static ParkingLot of(List<Floor> floors) {
+        return new ParkingLot(floors);
     }
 
     public List<Floor> getFloors() {

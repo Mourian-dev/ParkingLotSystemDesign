@@ -1,22 +1,29 @@
 package com.parkingLot.pojo;
 
+import com.parkingLot.exception.InvalidInputException;
+import com.parkingLot.util.Validator;
+
 import java.util.UUID;
 
 public class Ticket {
     private final UUID ticketId;
     private final Vehicle vehicle;
     private final Spot spot;
-    private final Long entryTime;
+    private final long entryTime;
     private Long exitTime;
 
-    public Ticket(UUID ticketId, Vehicle vehicle, Spot spot) {
-        if (ticketId == null || vehicle == null || spot == null) {
-            throw new IllegalArgumentException("Ticket requires ticketId, vehicle and spot.");
-        }
+    private Ticket(UUID ticketId, Vehicle vehicle, Spot spot) {
+        Validator.requireNonNull(ticketId, "ticketId");
+        Validator.requireNonNull(vehicle, "vehicle");
+        Validator.requireNonNull(spot, "spot");
         this.ticketId = ticketId;
         this.vehicle = vehicle;
         this.spot = spot;
         this.entryTime = System.currentTimeMillis();
+    }
+
+    public static Ticket create(Vehicle vehicle, Spot spot) {
+        return new Ticket(UUID.randomUUID(), vehicle, spot);
     }
 
     public UUID getTicketId() {
@@ -27,15 +34,15 @@ public class Ticket {
         return vehicle;
     }
 
-    public Spot getSpot() {
+    Spot getSpot() {
         return spot;
     }
 
-    public Spot getSlot() {
-        return getSpot();
+    public SpotInfo getSpotInfo() {
+        return SpotInfo.from(spot);
     }
 
-    public Long getEntryTime() {
+    public long getEntryTime() {
         return entryTime;
     }
 
@@ -43,9 +50,9 @@ public class Ticket {
         return exitTime;
     }
 
-    public void setExitTime(Long exitTime) {
-        if (exitTime == null || exitTime < entryTime) {
-            throw new IllegalArgumentException("Exit time must be >= entry time.");
+    public void setExitTime(long exitTime) {
+        if (exitTime < entryTime) {
+            throw new InvalidInputException("exitTime must be >= entryTime.");
         }
         this.exitTime = exitTime;
     }
