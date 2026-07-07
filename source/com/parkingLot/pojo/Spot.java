@@ -8,6 +8,9 @@ public class Spot {
     private Vehicle vehicle;
 
     public Spot(int slotNo,int floorNo,VehicleType vehicleType) {
+        if (slotNo <= 0 || floorNo < 0 || vehicleType == null) {
+            throw new IllegalArgumentException("Invalid spot configuration.");
+        }
         this.slotNo = slotNo;
         this.floorNo = floorNo;
         this.vehicleType = vehicleType;
@@ -30,7 +33,10 @@ public class Spot {
         return isOccupied;
     }
 
-    public void park(Vehicle vehicle) {
+    public synchronized void park(Vehicle vehicle) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Vehicle cannot be null.");
+        }
         if(!this.isOccupied && vehicle.getVehicleType() == this.vehicleType) {
             this.vehicle = vehicle;
             this.isOccupied = true;
@@ -39,7 +45,7 @@ public class Spot {
         }
     }
 
-    public void unPark() {
+    public synchronized void unPark() {
         if(this.isOccupied) {
             this.vehicle = null;
             this.isOccupied = false;

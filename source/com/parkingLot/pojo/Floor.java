@@ -7,6 +7,9 @@ public class Floor {
     private final List<Spot> spots;
 
     public Floor(int floorNo,List<Spot> spots) {
+        if (floorNo < 0 || spots == null) {
+            throw new IllegalArgumentException("Invalid floor configuration.");
+        }
         this.floorNo = floorNo;
         this.spots = spots;
     }
@@ -15,7 +18,7 @@ public class Floor {
         return floorNo;
     }
 
-    public List<Spot> getSlots() {
+    public List<Spot> getSpots() {
         return spots;
     }
 }

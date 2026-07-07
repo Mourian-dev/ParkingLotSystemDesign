@@ -6,6 +6,15 @@ public class Payment {
     private final PaymentMethod paymentMethod;
 
     public Payment(String paymentId, double amount, PaymentMethod paymentMethod) {
+        if (paymentId == null || paymentId.isBlank()) {
+            throw new IllegalArgumentException("Payment id is required.");
+        }
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative.");
+        }
+        if (paymentMethod == null) {
+            throw new IllegalArgumentException("Payment method is required.");
+        }
         this.paymentId = paymentId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;

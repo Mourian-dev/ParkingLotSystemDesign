@@ -2,13 +2,17 @@ package com.parkingLot.repository;
 
 import com.parkingLot.pojo.Ticket;
 
+import java.util.UUID;
+
 public interface TicketRepository {
 
     void saveTicket(Ticket ticket);
 
-    Ticket getTicket(String ticketId);
+    Ticket getTicket(UUID ticketId);
+
+    Ticket getActiveTicketByVehicleNumber(String vehicleNumber);
 
     void updateTicket(Ticket ticket);
 
-    void deleteTicket(String ticketId);
+    void deleteTicket(UUID ticketId);
 }

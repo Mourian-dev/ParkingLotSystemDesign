@@ -10,6 +10,9 @@ public class Ticket {
     private Long exitTime;
 
     public Ticket(UUID ticketId, Vehicle vehicle, Spot spot) {
+        if (ticketId == null || vehicle == null || spot == null) {
+            throw new IllegalArgumentException("Ticket requires ticketId, vehicle and spot.");
+        }
         this.ticketId = ticketId;
         this.vehicle = vehicle;
         this.spot = spot;
@@ -24,8 +27,12 @@ public class Ticket {
         return vehicle;
     }
 
-    public Spot getSlot() {
+    public Spot getSpot() {
         return spot;
+    }
+
+    public Spot getSlot() {
+        return getSpot();
     }
 
     public Long getEntryTime() {
@@ -37,6 +44,9 @@ public class Ticket {
     }
 
     public void setExitTime(Long exitTime) {
+        if (exitTime == null || exitTime < entryTime) {
+            throw new IllegalArgumentException("Exit time must be >= entry time.");
+        }
         this.exitTime = exitTime;
     }
 }
