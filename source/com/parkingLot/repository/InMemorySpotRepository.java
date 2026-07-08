@@ -1,6 +1,5 @@
 package com.parkingLot.repository;
 
-import com.parkingLot.pojo.Floor;
 import com.parkingLot.pojo.ParkingLot;
 import com.parkingLot.pojo.Spot;
 import com.parkingLot.pojo.VehicleType;
@@ -12,14 +11,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemorySpotRepository implements SpotRepository {
 
+    private static InMemorySpotRepository instance;
+
     private final Map<String, Spot> spotStore = new ConcurrentHashMap<>();
 
     public InMemorySpotRepository(ParkingLot parkingLot) {
-        for (Floor floor : parkingLot.getFloors()) {
-            for (Spot spot : floor.getSpots()) {
-                saveSpot(spot);
-            }
+        parkingLot.getFloors().stream()
+                .flatMap(f -> f.getSpots().stream())
+                .forEach(this::saveSpot);
+    }
+
+    static SpotRepository getInstance(ParkingLot parkingLot) {
+        if (instance == null) {
+            instance = new InMemorySpotRepository(parkingLot);
         }
+        return instance;
     }
 
     @Override
@@ -31,8 +37,7 @@ public class InMemorySpotRepository implements SpotRepository {
     public Optional<Spot> findAvailableSpot(VehicleType vehicleType) {
         return spotStore.values().stream()
                 .filter(spot -> !spot.isOccupied() && spot.getVehicleType() == vehicleType)
-                .sorted(Comparator.comparingInt(Spot::getFloorNo).thenComparingInt(Spot::getSlotNo))
-                .findFirst();
+                .min(Comparator.comparingInt(Spot::getFloorNo).thenComparingInt(Spot::getSlotNo));
     }
 
     @Override
@@ -45,13 +50,7 @@ public class InMemorySpotRepository implements SpotRepository {
         spotStore.put(key(spot.getSlotNo(), spot.getFloorNo()), spot);
     }
 
-    @Override
-    public void deleteSpot(int spotNo, int floorNo) {
-        spotStore.remove(key(spotNo, floorNo));
-    }
-
     private String key(int spotNo, int floorNo) {
         return floorNo + "-" + spotNo;
     }
 }
-

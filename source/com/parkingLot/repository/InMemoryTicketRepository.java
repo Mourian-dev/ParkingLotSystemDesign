@@ -9,7 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryTicketRepository implements TicketRepository {
 
+    private static InMemoryTicketRepository instance;
+
     private final Map<UUID, Ticket> ticketStore = new ConcurrentHashMap<>();
+
+    static TicketRepository getInstance() {
+        if (instance == null) {
+            instance = new InMemoryTicketRepository();
+        }
+        return instance;
+    }
 
     @Override
     public void saveTicket(Ticket ticket) {
@@ -33,10 +42,4 @@ public class InMemoryTicketRepository implements TicketRepository {
     public void updateTicket(Ticket ticket) {
         ticketStore.put(ticket.getTicketId(), ticket);
     }
-
-    @Override
-    public void deleteTicket(UUID ticketId) {
-        ticketStore.remove(ticketId);
-    }
 }
-

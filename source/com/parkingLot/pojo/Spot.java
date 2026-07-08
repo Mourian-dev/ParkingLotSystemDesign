@@ -1,8 +1,10 @@
 package com.parkingLot.pojo;
 
-import com.parkingLot.exception.InvalidTicketException;
+import com.parkingLot.exception.SpotAlreadyEmptyException;
 import com.parkingLot.exception.SpotTypeMismatchException;
 import com.parkingLot.util.Validator;
+
+import java.util.Optional;
 
 public class Spot {
     private final int slotNo;
@@ -41,10 +43,14 @@ public class Spot {
         return isOccupied;
     }
 
+    public Optional<Vehicle> getVehicle() {
+        return Optional.ofNullable(vehicle);
+    }
+
     public synchronized boolean tryPark(Vehicle vehicle) {
         Validator.requireNonNull(vehicle, "vehicle");
         if (vehicle.getVehicleType() != this.vehicleType) {
-            throw new SpotTypeMismatchException(vehicle.getVehicleType(), this.vehicleType);
+            throw SpotTypeMismatchException.of(vehicle.getVehicleType(), this.vehicleType);
         }
         if (this.isOccupied) {
             return false;
@@ -56,7 +62,7 @@ public class Spot {
 
     public synchronized void unPark() {
         if (!this.isOccupied) {
-            throw new InvalidTicketException("Spot is already empty.");
+            throw SpotAlreadyEmptyException.forSpot(slotNo, floorNo);
         }
         this.vehicle = null;
         this.isOccupied = false;

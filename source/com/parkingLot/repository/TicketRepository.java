@@ -7,6 +7,10 @@ import java.util.UUID;
 
 public interface TicketRepository {
 
+    static TicketRepository getInstance() {
+        return InMemoryTicketRepository.getInstance();
+    }
+
     void saveTicket(Ticket ticket);
 
     Ticket getTicket(UUID ticketId);
@@ -14,6 +18,4 @@ public interface TicketRepository {
     Optional<Ticket> getActiveTicketByVehicleNumber(String vehicleNumber);
 
     void updateTicket(Ticket ticket);
-
-    void deleteTicket(UUID ticketId);
 }

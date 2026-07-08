@@ -18,7 +18,7 @@ public class NearestSpotAssignmentStrategy implements SpotAssignmentStrategy {
     public Ticket assignSpot(Vehicle vehicle) {
         while (true) {
             Spot candidate = spotRepository.findAvailableSpot(vehicle.getVehicleType())
-                    .orElseThrow(() -> new SpotUnavailableException(vehicle.getVehicleType()));
+                    .orElseThrow(() -> SpotUnavailableException.forVehicleType(vehicle.getVehicleType()));
 
             if (candidate.tryPark(vehicle)) {
                 spotRepository.updateSpot(candidate);

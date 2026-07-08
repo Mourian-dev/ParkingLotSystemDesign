@@ -1,6 +1,6 @@
 package com.parkingLot.pojo;
 
-import com.parkingLot.exception.InvalidInputException;
+import com.parkingLot.exception.InvalidTicketException;
 import com.parkingLot.util.Validator;
 
 import java.util.UUID;
@@ -34,10 +34,6 @@ public class Ticket {
         return vehicle;
     }
 
-    Spot getSpot() {
-        return spot;
-    }
-
     public SpotInfo getSpotInfo() {
         return SpotInfo.from(spot);
     }
@@ -52,7 +48,7 @@ public class Ticket {
 
     public void setExitTime(long exitTime) {
         if (exitTime < entryTime) {
-            throw new InvalidInputException("exitTime must be >= entryTime.");
+            throw InvalidTicketException.invalidExitTime();
         }
         this.exitTime = exitTime;
     }

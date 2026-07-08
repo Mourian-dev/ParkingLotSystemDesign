@@ -12,6 +12,7 @@ public class HourlyPricingStrategy implements PricingStrategy {
 
     private final double defaultHourlyRate;
     private final Map<VehicleType, Double> rateByType;
+    private boolean sealed = false;
 
     public HourlyPricingStrategy(double defaultHourlyRate) {
         Validator.requirePositive(defaultHourlyRate, "defaultHourlyRate");
@@ -20,6 +21,9 @@ public class HourlyPricingStrategy implements PricingStrategy {
     }
 
     public HourlyPricingStrategy withRate(VehicleType vehicleType, double rate) {
+        if (sealed) {
+            throw new IllegalStateException("Rates cannot be changed after pricing has started.");
+        }
         Validator.requireNonNull(vehicleType, "vehicleType");
         Validator.requirePositive(rate, "rate");
         rateByType.put(vehicleType, rate);
@@ -28,8 +32,9 @@ public class HourlyPricingStrategy implements PricingStrategy {
 
     @Override
     public double calculatePrice(Ticket ticket) {
+        sealed = true;
         if (ticket.getExitTime() == null) {
-            throw new InvalidTicketException("Cannot price an open ticket.");
+            throw InvalidTicketException.stillOpen(ticket.getTicketId());
         }
         double rate = rateByType.getOrDefault(ticket.getSpotInfo().getVehicleType(), defaultHourlyRate);
         long durationMillis = ticket.getExitTime() - ticket.getEntryTime();

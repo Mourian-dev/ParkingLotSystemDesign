@@ -50,9 +50,9 @@ public class ParkingService {
     public Ticket parkVehicle(Vehicle vehicle) {
         Validator.requireNonNull(vehicle, "vehicle");
         ticketRepository.getActiveTicketByVehicleNumber(vehicle.getVehicleNumber())
-                .ifPresent(t -> {
-                    throw new VehicleAlreadyParkedException(vehicle.getVehicleNumber(), t.getTicketId());
-                });
+            .ifPresent(t -> {
+                throw VehicleAlreadyParkedException.forVehicle(vehicle.getVehicleNumber(), t.getTicketId());
+            });
 
         Ticket ticket = spotAssignmentStrategy.assignSpot(vehicle);
         ticketRepository.saveTicket(ticket);
@@ -86,7 +86,10 @@ public class ParkingService {
     }
 
     private void publish(ParkingEventType type, Ticket ticket) {
-        ParkingEvent event = new ParkingEvent(type, ticket, System.currentTimeMillis());
+        long timestamp = type == ParkingEventType.VEHICLE_UNPARKED
+                ? ticket.getExitTime()
+                : System.currentTimeMillis();
+        ParkingEvent event = new ParkingEvent(type, ticket, timestamp);
         listeners.forEach(l -> l.onEvent(event));
     }
 }
