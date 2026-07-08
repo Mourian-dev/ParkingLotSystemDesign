@@ -11,12 +11,12 @@ import com.parkingLot.repository.PaymentRepository;
 import com.parkingLot.strategy.PaymentStrategy;
 import com.parkingLot.util.Validator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PaymentService {
-    private final List<PaymentEventListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<PaymentEventListener> listeners = new ArrayList<>();
 
     private final PaymentRepository paymentRepository;
 
