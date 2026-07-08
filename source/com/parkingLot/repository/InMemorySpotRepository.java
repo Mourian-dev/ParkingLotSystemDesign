@@ -3,6 +3,7 @@ package com.parkingLot.repository;
 import com.parkingLot.pojo.ParkingLot;
 import com.parkingLot.pojo.Spot;
 import com.parkingLot.pojo.VehicleType;
+import com.parkingLot.util.Validator;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -16,12 +17,14 @@ public class InMemorySpotRepository implements SpotRepository {
     private final Map<String, Spot> spotStore = new ConcurrentHashMap<>();
 
     public InMemorySpotRepository(ParkingLot parkingLot) {
+        Validator.requireNonNull(parkingLot, "parkingLot");
         parkingLot.getFloors().stream()
                 .flatMap(f -> f.getSpots().stream())
                 .forEach(this::saveSpot);
     }
 
     static SpotRepository getInstance(ParkingLot parkingLot) {
+        Validator.requireNonNull(parkingLot, "parkingLot");
         if (instance == null) {
             instance = new InMemorySpotRepository(parkingLot);
         }

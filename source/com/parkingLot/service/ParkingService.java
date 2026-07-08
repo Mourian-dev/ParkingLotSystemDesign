@@ -35,6 +35,12 @@ public class ParkingService {
             SpotRepository spotRepository,
             PricingStrategy pricingStrategy,
             PaymentService paymentService) {
+        Validator.requireNonNull(spotAssignmentStrategy, "spotAssignmentStrategy");
+        Validator.requireNonNull(ticketRepository, "ticketRepository");
+        Validator.requireNonNull(spotRepository, "spotRepository");
+        Validator.requireNonNull(pricingStrategy, "pricingStrategy");
+        Validator.requireNonNull(paymentService, "paymentService");
+
         this.spotAssignmentStrategy = spotAssignmentStrategy;
         this.ticketRepository = ticketRepository;
         this.spotRepository = spotRepository;
@@ -75,6 +81,7 @@ public class ParkingService {
         ticket.setExitTime(System.currentTimeMillis());
         double price = pricingStrategy.calculatePrice(ticket);
 
+        Payment payment = paymentService.collect(price, paymentMethod);
         SpotInfo spotInfo = ticket.getSpotInfo();
         Spot spot = spotRepository.getSpot(spotInfo.getSlotNo(), spotInfo.getFloorNo());
         spot.unPark();
@@ -82,7 +89,7 @@ public class ParkingService {
         ticketRepository.updateTicket(ticket);
 
         publish(ParkingEventType.VEHICLE_UNPARKED, ticket);
-        return paymentService.collect(price, paymentMethod);
+        return payment;
     }
 
     private void publish(ParkingEventType type, Ticket ticket) {

@@ -1,6 +1,7 @@
 package com.parkingLot.repository;
 
 import com.parkingLot.pojo.Ticket;
+import com.parkingLot.util.Validator;
 
 import java.util.Map;
 import java.util.Optional;
@@ -22,16 +23,19 @@ public class InMemoryTicketRepository implements TicketRepository {
 
     @Override
     public void saveTicket(Ticket ticket) {
+        Validator.requireNonNull(ticket, "ticket");
         ticketStore.put(ticket.getTicketId(), ticket);
     }
 
     @Override
     public Ticket getTicket(UUID ticketId) {
+        Validator.requireNonNull(ticketId, "ticketId");
         return ticketStore.get(ticketId);
     }
 
     @Override
     public Optional<Ticket> getActiveTicketByVehicleNumber(String vehicleNumber) {
+        Validator.requireNonNull(vehicleNumber, "vehicleNumber");
         return ticketStore.values().stream()
                 .filter(ticket -> ticket.getVehicle().getVehicleNumber().equals(vehicleNumber))
                 .filter(ticket -> ticket.getExitTime() == null)
@@ -40,6 +44,7 @@ public class InMemoryTicketRepository implements TicketRepository {
 
     @Override
     public void updateTicket(Ticket ticket) {
+        Validator.requireNonNull(ticket, "ticket");
         ticketStore.put(ticket.getTicketId(), ticket);
     }
 }

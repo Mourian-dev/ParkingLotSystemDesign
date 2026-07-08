@@ -3,11 +3,13 @@ package com.parkingLot.repository;
 import com.parkingLot.pojo.ParkingLot;
 import com.parkingLot.pojo.Spot;
 import com.parkingLot.pojo.VehicleType;
+import com.parkingLot.util.Validator;
 
 import java.util.Optional;
 
 public interface SpotRepository {
     static SpotRepository getInstance(ParkingLot parkingLot) {
+        Validator.requireNonNull(parkingLot, "parkingLot");
         return InMemorySpotRepository.getInstance(parkingLot);
     }
     Spot getSpot(int spotNo, int floorNo);

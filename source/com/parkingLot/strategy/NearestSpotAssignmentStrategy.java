@@ -5,12 +5,14 @@ import com.parkingLot.pojo.Spot;
 import com.parkingLot.pojo.Ticket;
 import com.parkingLot.pojo.Vehicle;
 import com.parkingLot.repository.SpotRepository;
+import com.parkingLot.util.Validator;
 
 public class NearestSpotAssignmentStrategy implements SpotAssignmentStrategy {
 
     private final SpotRepository spotRepository;
 
     public NearestSpotAssignmentStrategy(SpotRepository spotRepository) {
+        Validator.requireNonNull(spotRepository, "spotRepository");
         this.spotRepository = spotRepository;
     }
 

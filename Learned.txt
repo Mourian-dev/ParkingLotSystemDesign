@@ -1,0 +1,15 @@
+SOLID
+SRP -> Every POJO / Entities are having single responsibility. Nothing more, nothing less
+OCP -> We can extend repository, pricing strategy capabilities without modifying the services implementation. Which satisfies OCP.
+LSP -> We can use any implementation of the repository or pricing strategy without changing the service implementation. Which satisfies LSP.
+ISP -> I think no ISP implemented. Since there is no need for segregation of interfaces in this case. But if we have multiple services with different requirements, we can create separate interfaces for each service.
+DIP -> We can inject the repository and pricing strategy implementations into the service, which satisfies DIP. The service does not depend on concrete implementations, but rather on abstractions (interfaces).
+
+Newly learned:
+- The importance of adhering to SOLID principles in software design to create maintainable and scalable applications
+- EnumMap for performance over HashMap when using enums as keys
+- The use of interfaces to define contracts for services and repositories, allowing for flexibility and easier testing
+- Observer patterns for logging parkings.
+- Concurrency handling using synchronized keyword and flags for single server architecure.
+- Factory method for non-trivial object creation, allowing for better encapsulation and separation of concerns.
+- Retry logic for handling parking service failures, ensuring robustness and reliability in the application.
